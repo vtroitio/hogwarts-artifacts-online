@@ -3,7 +3,6 @@ package com.valik.hogwarts_artifacts_online.wizard;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -210,6 +209,44 @@ public class WizardControllerTest {
             .andExpect(jsonPath("$.flag").value(false))
             .andExpect(jsonPath("$.code").value(StatusCode.NOT_FOUND))
             .andExpect(jsonPath("$.message").value("Could not find wizard with Id 1"))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    void testAssingArtifactSuccess() throws Exception {
+        doNothing().when(this.wizardService).assingArtifact(2, "1250808601744904192");
+
+        this.mockMvc.perform(put(this.baseUrl + "/wizards/2/artifacts/1250808601744904192")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.flag").value(true))
+            .andExpect(jsonPath("$.code").value(StatusCode.SUCCESS))
+            .andExpect(jsonPath("$.message").value("Artifact Assignment Success"))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    void testAssingArtifactErrorWithNonExistentWizardtId() throws Exception {
+        doThrow(new ResourceNotFoundException("wizard", 2))
+            .when(this.wizardService).assingArtifact(2, "1250808601744904192");
+
+        this.mockMvc.perform(put(this.baseUrl + "/wizards/2/artifacts/1250808601744904192")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.flag").value(false))
+            .andExpect(jsonPath("$.code").value(StatusCode.NOT_FOUND))
+            .andExpect(jsonPath("$.message").value("Could not find wizard with Id 2"))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    void testAssingArtifactErrorWithNonExistentArtifactId() throws Exception {
+        doThrow(new ResourceNotFoundException("artifact", "1250808601744904192"))
+            .when(this.wizardService).assingArtifact(2, "1250808601744904192");
+
+        this.mockMvc.perform(put(this.baseUrl + "/wizards/2/artifacts/1250808601744904192")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.flag").value(false))
+            .andExpect(jsonPath("$.code").value(StatusCode.NOT_FOUND))
+            .andExpect(jsonPath("$.message").value("Could not find artifact with Id 1250808601744904192"))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 

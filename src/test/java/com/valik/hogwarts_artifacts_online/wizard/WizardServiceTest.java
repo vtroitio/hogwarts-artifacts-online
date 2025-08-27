@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.valik.hogwarts_artifacts_online.artifact.Artifact;
+import com.valik.hogwarts_artifacts_online.artifact.ArtifactRepository;
 import com.valik.hogwarts_artifacts_online.system.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +30,9 @@ public class WizardServiceTest {
 
     @Mock
     WizardRepository wizardRepository;
+
+    @Mock
+    ArtifactRepository artifactRepository;
 
     @InjectMocks
     WizardService wizardService;
@@ -195,4 +199,68 @@ public class WizardServiceTest {
         verify(this.wizardRepository, times(1)).findById(1);
     }
 
+    @Test
+    void testAssingArtifactSuccess() {
+        Artifact a = new Artifact();
+        a.setId("1250808601744904192");
+        a.setName("Invisibility Cloak");
+        a.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        a.setImageUrl("ImageUrl");
+
+        Wizard w2 = new Wizard();
+        w2.setId(2);
+        w2.setName("Harry Potter");
+        w2.addArtifact(a);
+
+        Wizard w3 = new Wizard();
+        w3.setId(3);
+        w3.setName("Neville Longbottom");
+
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(a));
+        given(this.wizardRepository.findById(3)).willReturn(Optional.of(w3));
+
+        this.wizardService.assingArtifact(3, "1250808601744904192");
+
+        assertThat(a.getOwner().getId()).isEqualTo(3);
+        assertThat(w3.getArtifacts()).contains(a);
+    }
+
+    @Test
+    void testAssingArtifactErrorWithNonExistentWizardId() {
+        Artifact a = new Artifact();
+        a.setId("1250808601744904192");
+        a.setName("Invisibility Cloak");
+        a.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        a.setImageUrl("ImageUrl");
+
+        Wizard w2 = new Wizard();
+        w2.setId(2);
+        w2.setName("Harry Potter");
+        w2.addArtifact(a);
+
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(a));
+        given(this.wizardRepository.findById(3)).willReturn(Optional.empty());
+
+        Throwable thrown = assertThrows(ResourceNotFoundException.class, () -> {
+            this.wizardService.assingArtifact(3, "1250808601744904192");
+        });
+
+        assertThat(thrown)
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Could not find wizard with Id 3");
+        assertThat(a.getOwner().getId()).isEqualTo(2);
+    }
+
+    @Test
+    void testAssingArtifactErrorWithNonExistentArtifactId() {
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.empty());
+
+        Throwable thrown = assertThrows(ResourceNotFoundException.class, () -> {
+            this.wizardService.assingArtifact(3, "1250808601744904192");
+        });
+
+        assertThat(thrown)
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Could not find artifact with Id 1250808601744904192");
+    }
 }
