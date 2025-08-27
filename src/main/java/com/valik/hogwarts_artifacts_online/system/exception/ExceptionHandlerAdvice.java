@@ -1,4 +1,4 @@
-package com.valik.hogwarts_artifacts_online.system;
+package com.valik.hogwarts_artifacts_online.system.exception;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.valik.hogwarts_artifacts_online.artifact.ArtifactNotFoundException;
+import com.valik.hogwarts_artifacts_online.system.Result;
+import com.valik.hogwarts_artifacts_online.system.StatusCode;
 
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
-    @ExceptionHandler(ArtifactNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    Result handleArtifactNotFoundException(ArtifactNotFoundException ex) {
+    Result handleResourceNotFoundException(ResourceNotFoundException ex) {
         return new Result(false, StatusCode.NOT_FOUND, ex.getMessage());
     }
 

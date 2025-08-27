@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.valik.hogwarts_artifacts_online.artifact.utils.IdWorker;
+import com.valik.hogwarts_artifacts_online.system.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -23,7 +24,7 @@ public class ArtifactService {
 
     public Artifact findById(String artifactId) {
         return this.artifactRepository.findById(artifactId)
-                .orElseThrow(() -> new ArtifactNotFoundException(artifactId));
+                .orElseThrow(() -> new ResourceNotFoundException("artifact", artifactId));
     }
 
     public List<Artifact> findAll() {
@@ -43,12 +44,12 @@ public class ArtifactService {
                     oldArtifact.setImageUrl(update.getImageUrl());
                     return this.artifactRepository.save(oldArtifact);
                 })
-                .orElseThrow(() -> new ArtifactNotFoundException(artifactId));
+                .orElseThrow(() -> new ResourceNotFoundException("artifact", artifactId));
     }
 
     public void delete(String artifactId) {
         this.artifactRepository.findById(artifactId)
-            .orElseThrow(() -> new ArtifactNotFoundException(artifactId));
+            .orElseThrow(() -> new ResourceNotFoundException("artifact", artifactId));
         this.artifactRepository.deleteById(artifactId);
     }
 }
