@@ -32,7 +32,7 @@ import com.valik.hogwarts_artifacts_online.system.exception.ResourceNotFoundExce
 import com.valik.hogwarts_artifacts_online.wizard.dto.WizardDto;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false) // Desactiva Spring Security
 public class WizardControllerTest {
 
     @Autowired

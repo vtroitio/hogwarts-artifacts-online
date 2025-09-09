@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.valik.hogwarts_artifacts_online.artifact.Artifact;
 import com.valik.hogwarts_artifacts_online.artifact.ArtifactRepository;
 import com.valik.hogwarts_artifacts_online.hogwartsUser.HogwartsUser;
-import com.valik.hogwarts_artifacts_online.hogwartsUser.UserRepository;
+import com.valik.hogwarts_artifacts_online.hogwartsUser.UserService;
 import com.valik.hogwarts_artifacts_online.wizard.Wizard;
 import com.valik.hogwarts_artifacts_online.wizard.WizardRepository;
 
@@ -17,13 +17,13 @@ public class DBDataInitializer implements CommandLineRunner {
 
     private final WizardRepository wizardRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public DBDataInitializer(ArtifactRepository artifactRepository, WizardRepository wizardRepository,
-            UserRepository userRepository) {
+            UserService userService) {
         this.artifactRepository = artifactRepository;
         this.wizardRepository = wizardRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -78,11 +78,11 @@ public class DBDataInitializer implements CommandLineRunner {
         w3.setName("Neville Longbottom");
         w3.addArtifact(a5);
 
-        wizardRepository.save(w1);
-        wizardRepository.save(w2);
-        wizardRepository.save(w3);
+        this.wizardRepository.save(w1);
+        this.wizardRepository.save(w2);
+        this.wizardRepository.save(w3);
 
-        artifactRepository.save(a6);
+        this.artifactRepository.save(a6);
 
         HogwartsUser u1 = new HogwartsUser();
         u1.setUsername("john");
@@ -102,9 +102,9 @@ public class DBDataInitializer implements CommandLineRunner {
         u3.setEnabled(false);
         u3.setRoles("user");
 
-        userRepository.save(u1);
-        userRepository.save(u2);
-        userRepository.save(u3);
+        this.userService.save(u1);
+        this.userService.save(u2);
+        this.userService.save(u3);
 
     }
 
