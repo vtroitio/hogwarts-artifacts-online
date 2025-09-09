@@ -31,7 +31,7 @@ import com.valik.hogwarts_artifacts_online.system.StatusCode;
 import com.valik.hogwarts_artifacts_online.system.exception.ResourceNotFoundException;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false) // Desactiva Spring Security
 public class ArtifactControllerTest {
 
     @Autowired
