@@ -1,0 +1,63 @@
+name: Build and deploy a container to Google Cloud Run
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}       # ID del proyecto de GCP
+  REGION: us-central1                                 # Cambia a tu región (e.g. southamerica-east1)
+  SERVICE_NAME: hogwarts-artifacts-online             # Nombre del servicio en Cloud Run
+  REPO_NAME: hogwarts-artifacts                       # Nombre del repositorio en Artifact Registry
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: 'read'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Obtener el código
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # 2. (Opcional) Compilar jar para tests o si lo usas en docker build
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package -DskipTests
+
+      # 3. Instalar gcloud y autenticarse
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      # 4. Configurar Docker para Artifact Registry
+      - name: Configure docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      # 5. Construir y subir imagen a Artifact Registry
+      - name: Build and push Docker image
+        run: |
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/app:${{ github.sha }}"
+          docker build -t $IMAGE .
+          docker push $IMAGE
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      # 6. Desplegar en Cloud Run
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.IMAGE }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated
