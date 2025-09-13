@@ -2,7 +2,7 @@ name: Build and deploy a container to Google Cloud Run
 
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}       # ID del proyecto de GCP
-  REGION: us-central1                                 # Cambia a tu región (e.g. southamerica-east1)
+  REGION: europe-west1
   SERVICE_NAME: hogwarts-artifacts-online             # Nombre del servicio en Cloud Run
   REPO_NAME: hogwarts-artifacts                       # Nombre del repositorio en Artifact Registry
 
