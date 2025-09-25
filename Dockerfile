@@ -1,5 +1,5 @@
 # Perform the extraction in a separate builder container
-FROM eclipse-temurin:17-jre AS builder
+FROM public.ecr.aws/docker/library/eclipse-temurin:17-jre AS builder
 WORKDIR /builder
 # This points to the built jar file in the target folder
 ARG JAR_FILE=target/*.jar
@@ -9,7 +9,7 @@ COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
 # This is the runtime container
-FROM eclipse-temurin:17-jre
+FROM public.ecr.aws/docker/library/eclipse-temurin:17-jre
 WORKDIR /application
 # Copy the extracted jar contents from the builder container into the working directory in the runtime container
 # Every copy step creates a new docker layer
