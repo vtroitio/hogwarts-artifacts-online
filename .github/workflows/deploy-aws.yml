@@ -47,5 +47,5 @@ jobs:
       with:
         task-definition: ecs-task-def.json
         service: hogwarts-service
-        cluster: hogwarts-cluster
+        cluster: hogwars-cluster
         wait-for-service-stability: true
