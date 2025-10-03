@@ -49,6 +49,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
       with:
         task-definition: ecs-task-def.json
-        service: hogwarts-task-service-rdm3wept
-        cluster: hogwars-cluster
+        cluster: hogwarts-cluster
+        service: hogwarts-task-def-service-78u1ujn7
         wait-for-service-stability: true

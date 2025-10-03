@@ -1,85 +1,29 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:sa-east-1:265556964332:task-definition/hogwarts-task-def:1",
-    "containerDefinitions": [
+  "family": "hogwarts-task-def",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "executionRoleArn": "arn:aws:iam::265556964332:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "hogwarts-container",
+      "image": "265556964332.dkr.ecr.sa-east-1.amazonaws.com/hogwarts-api:latest",
+      "essential": true,
+      "portMappings": [
         {
-            "name": "hogwarts-container",
-            "image": "265556964332.dkr.ecr.sa-east-1.amazonaws.com/hogwarts-api:latest",
-            "cpu": 0,
-            "portMappings": [
-                {
-                    "containerPort": 8080,
-                    "hostPort": 8080,
-                    "protocol": "tcp",
-                    "name": "hogwarts-container-8080-tcp",
-                    "appProtocol": "http"
-                }
-            ],
-            "essential": true,
-            "environment": [],
-            "environmentFiles": [],
-            "mountPoints": [],
-            "volumesFrom": [],
-            "ulimits": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "/ecs/hogwarts-task-def",
-                    "awslogs-create-group": "true",
-                    "awslogs-region": "sa-east-1",
-                    "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
-            },
-            "systemControls": []
+          "containerPort": 8080,
+          "protocol": "tcp"
         }
-    ],
-    "family": "hogwarts-task-def",
-    "executionRoleArn": "arn:aws:iam::265556964332:role/ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
-    "revision": 1,
-    "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
-        {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/hogwarts-task-def",
+          "awslogs-region": "sa-east-1",
+          "awslogs-stream-prefix": "ecs"
         }
-    ],
-    "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
-    "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
-    },
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "1024",
-    "memory": "3072",
-    "registeredAt": "2025-10-03T01:02:46.557000-03:00",
-    "registeredBy": "arn:aws:iam::265556964332:root",
-    "enableFaultInjection": false
+      }
+    }
+  ]
 }
