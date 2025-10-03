@@ -1,10 +1,16 @@
 {
   "family": "hogwarts-task-def",
   "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "1024",
-  "memory": "3072",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
   "executionRoleArn": "arn:aws:iam::265556964332:role/ecsTaskExecutionRole",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
   "containerDefinitions": [
     {
       "name": "hogwarts-container",
@@ -13,6 +19,7 @@
       "portMappings": [
         {
           "containerPort": 8080,
+          "hostPort": 8080,
           "protocol": "tcp"
         }
       ],
